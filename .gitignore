@@ -1,0 +1,4 @@
+# regenerated example workbooks (binary, not stored in git)
+data-fidelity-audit/examples/*.xlsx
+# python cache
+__pycache__/

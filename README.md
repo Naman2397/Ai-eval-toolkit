@@ -43,6 +43,16 @@ python reviewer-agent/agent.py --task-type claims \
   --claims data-fidelity-audit/examples/claims.md --mock
 ```
 
+## Tests
+
+```bash
+python -m unittest discover tests
+```
+
+No test dependencies — stdlib `unittest` only. Covers the claims check,
+the workbook diff, the deck QA logic (via a stubbed `pptx` module), rubric
+validity, the agent's tool contract, and an end-to-end mock agent run.
+
 ## The review loop
 
 1. **Rubric** — pick or write a rubric for the task type (`rubrics/`).
