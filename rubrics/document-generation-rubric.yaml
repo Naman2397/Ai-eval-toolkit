@@ -1,0 +1,67 @@
+name: "document-generation-rubric"
+version: 1
+task_types: ["pptx", "xlsx", "docx", "pdf"]
+
+dimensions:
+  - id: task_completion
+    weight: 25
+    description: "Did the run produce the requested artifact?"
+    must_pass: true
+    checks:
+      - "Artifact was delivered and opens without errors"
+      - "File type matches the request"
+      - "File is not corrupted (see edge-cases/corrupted-output-protocol.md)"
+
+  - id: instruction_adherence
+    weight: 20
+    description: "Did the output follow the prompt's explicit requirements?"
+    must_pass: true
+    checks:
+      - "Slide/page/sheet count matches the request"
+      - "Requested outline or sections are all present, in order"
+      - "Explicit constraints honored (e.g. 'do not ask clarifying questions')"
+
+  - id: data_fidelity
+    weight: 25
+    description: "Does every claim trace back to the source material?"
+    must_pass: true
+    checks:
+      - "Numbers match the attached source data"
+      - "No invented charts, tables, or analyses beyond the source"
+      - "Added analysis is labeled as estimate/external or omitted"
+      - "Source data preserved intact (no hidden columns, no dropped rows)"
+
+  - id: template_adherence
+    weight: 15
+    description: "Does the output match the provided style reference?"
+    checks:
+      - "Template used for style only, not content"
+      - "Fonts, colors, and layout follow the reference"
+      - "Required elements placed (logo, page numbers, footers)"
+
+  - id: visual_quality
+    weight: 10
+    description: "Is the output visually clean and readable?"
+    checks:
+      - "No text overflow or overlapping elements"
+      - "Charts legible, not cramped; contrast sufficient"
+      - "No placeholder or lorem-ipsum text"
+
+  - id: validation_discipline
+    weight: 5
+    description: "Did the run validate its own work?"
+    checks:
+      - "Validation step performed (format check, render check)"
+      - "Issues found in QA were fixed and the artifact rebuilt"
+
+verdicts:
+  successful: "All must-pass dimensions green; at most minor visual issues."
+  successful_with_minor_limitations: "Delivered; small issues that don't affect usability."
+  partially_successful: "Delivered, but a must-pass dimension failed."
+  not_successful: "No usable artifact, or multiple must-pass dimensions failed."
+  not_assessable: "Trace or artifact missing/corrupted; cannot score."
+
+rules:
+  - "Fabricated data fails the run even if everything else is perfect."
+  - "Unnecessary clarification questions count against instruction adherence."
+  - "A rebuild after QA is good practice; an unrebuilt known defect is not."

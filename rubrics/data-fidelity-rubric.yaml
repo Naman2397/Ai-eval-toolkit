@@ -1,0 +1,52 @@
+name: "data-fidelity-rubric"
+version: 1
+description: >
+  Focused rubric for the single most important check: does the output stay
+  faithful to its source data? Use on its own for data-heavy tasks, or as the
+  data_fidelity dimension of the document-generation rubric.
+
+dimensions:
+  - id: numeric_accuracy
+    weight: 35
+    description: "Numbers in the output match the source."
+    must_pass: true
+    checks:
+      - "Every stated figure appears in the source data (or is a labeled estimate)"
+      - "Aggregations (sums, averages, shares) recompute correctly"
+      - "Units and scales preserved (%, $, decimals)"
+
+  - id: no_fabrication
+    weight: 35
+    description: "Nothing invented beyond the source."
+    must_pass: true
+    checks:
+      - "No charts or tables built from data not in the source"
+      - "No invented breakdowns (e.g. neighborhood splits, trend lines) presented as source-backed"
+      - "External or benchmark data clearly labeled when used"
+
+  - id: source_preservation
+    weight: 20
+    description: "The source material itself is left intact."
+    must_pass: true
+    checks:
+      - "No hidden columns or rows in workbook outputs"
+      - "No dropped or reordered source rows"
+      - "Formatting changes only where requested"
+
+  - id: estimate_labeling
+    weight: 10
+    description: "Non-source content is honestly labeled."
+    checks:
+      - "Illustrative or scenario values marked as such"
+      - "Estimates never presented as confirmed figures"
+
+verdicts:
+  successful: "All numeric claims trace to source; source intact."
+  partially_successful: "Minor labeling gaps, or one unsupported claim."
+  not_successful: "Fabricated data presented as source-backed, or source silently altered."
+  not_assessable: "Source data not available for comparison."
+
+rules:
+  - "One fabricated chart fails no_fabrication outright."
+  - "A hidden column is a source-preservation failure even if values are correct."
+  - "When in doubt, check the number against the source; don't trust the narrative."

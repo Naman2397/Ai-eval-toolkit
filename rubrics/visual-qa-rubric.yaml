@@ -1,0 +1,50 @@
+name: "visual-qa-rubric"
+version: 1
+description: >
+  Focused rubric for visual review of generated slide decks and documents.
+  Pairs with visual-qa/pptx_qa.py, which automates the mechanical checks.
+
+dimensions:
+  - id: layout_integrity
+    weight: 30
+    description: "Nothing broken or overlapping on the page."
+    checks:
+      - "No text overflow outside shapes or slide bounds"
+      - "No overlapping titles, labels, or figures"
+      - "Tables and charts fit their containers"
+
+  - id: readability
+    weight: 25
+    description: "The output is easy to read."
+    checks:
+      - "Sufficient contrast between text and background"
+      - "Charts not cramped; labels legible"
+      - "Font sizes consistent with the template"
+
+  - id: template_match
+    weight: 25
+    description: "Visual system matches the reference."
+    checks:
+      - "Color palette follows the reference"
+      - "Typography (families, hierarchy) follows the reference"
+      - "Required chrome present: logos, page numbers, footers"
+
+  - id: polish
+    weight: 20
+    description: "No leftover scaffolding."
+    checks:
+      - "No placeholder or sample text"
+      - "No broken image icons or missing assets"
+      - "Consistent spacing and alignment across slides"
+
+verdicts:
+  successful: "Clean, readable, on-template."
+  successful_with_minor_limitations: "Small issues (one cramped chart, one wrapped title) that don't hurt usability."
+  partially_successful: "Multiple visible defects affecting readability."
+  not_successful: "Layout broken across the deck."
+  not_assessable: "File corrupted or unrenderable."
+
+rules:
+  - "Automated checks catch the mechanical issues; the human pass catches taste."
+  - "One overflow on a key slide is minor. Overflow on every slide is partial."
+  - "Always render before judging — thumbnails lie."
