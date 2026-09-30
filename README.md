@@ -19,6 +19,7 @@ or employer.
 | `visual-qa/` | A PowerPoint QA script and checklist: slide counts, fonts, overflow, placeholders, contrast. |
 | `prompt-test-harness/` | A run-log template for disciplined prompt testing: attempts, settings, fresh-folder discipline, validation steps. |
 | `reviewer-agent/` | An agentic loop that reviews AI-generated outputs: picks verification tools, runs them, and writes a structured feedback report. Runs offline with a mock backend or live via any OpenAI-compatible API. |
+| `mcp-server/` | Exposes the verification tools over the Model Context Protocol (MCP), so any MCP-compatible AI client can discover and call them. |
 | `edge-cases/` | Protocol for handling corrupted or unassessable outputs. |
 
 ## Quick start
@@ -41,6 +42,9 @@ python visual-qa/pptx_qa.py --deck your_deck.pptx --expected-slides 10
 python reviewer-agent/agent.py --task-type claims \
   --source data-fidelity-audit/examples/source_data.csv \
   --claims data-fidelity-audit/examples/claims.md --mock
+
+# Serve the verification tools over MCP (needs: pip install "mcp<2")
+python mcp-server/server.py
 ```
 
 ## Tests
@@ -49,9 +53,12 @@ python reviewer-agent/agent.py --task-type claims \
 python -m unittest discover tests
 ```
 
-No test dependencies — stdlib `unittest` only. Covers the claims check,
+No test dependencies — stdlib `unittest` only, except `tests/test_mcp.py`,
+which needs the MCP SDK (`pip install "mcp<2"`) since it spins up a real
+server subprocess. Covers the claims check,
 the workbook diff, the deck QA logic (via a stubbed `pptx` module), rubric
-validity, the agent's tool contract, and an end-to-end mock agent run.
+validity, the agent's tool contract, an end-to-end mock agent run, and a
+live MCP protocol round-trip against the new server.
 
 ## The review loop
 
