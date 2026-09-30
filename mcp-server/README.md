@@ -52,3 +52,14 @@ resolved by the server process, so absolute paths are safest.
 MCP round-trip: `initialize` → `tools/list` → `tools/call`, asserting the
 fabricated `96,400` figure is caught through the protocol, not just the
 underlying function.
+
+## Seeing the protocol
+
+`raw_client_demo.py` is a ~40-line client with no MCP SDK at all — it speaks
+hand-built JSON-RPC 2.0 messages over stdio. Run it to watch the three-step
+handshake (`initialize` → `tools/list` → `tools/call`) catch the fabricated
+figure live:
+
+```bash
+python mcp-server/raw_client_demo.py
+```
